@@ -2,7 +2,7 @@
 # Aim :
   To create and deploy the ERC-20.
 # Procedure :
-  1,Create a new project
+  1,Create a new project<br>
   2,Open your terminal or command-line application on your computer. In your terminal, create a new folder named Token20. To do that, run the mkdir Token20 command. I usually run this command inside a folder named Projects, where I store all my other development projects.
   3,Go to the Token20 folder (run cd Token20).
   4,To initialize a new project, run truffle init.
