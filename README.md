@@ -39,6 +39,70 @@ Save the file.
   18,In the new terminal window, enter truffle build.
   <br>
 
+# Program:
+  ## Node.js:
+  ```
+pragma solidity >=0.4.22;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract ERC20MinerReward is ERC20 {
+
+    event LogNewAlert(string description, address indexed _from, uint256 _n);
+
+    constructor() public ERC20("MinerReward", "MRW") {}
+
+    function _reward() public {
+        _mint(block.coinbase, 20);
+        emit LogNewAlert('_rewarded', block.coinbase, block.number);
+    }
+}
+
+```
+
+## Python:
+```
+# SPDX-License-Identifier: MIT
+from solcx import compile_source
+from web3 import Web3
+
+# Solidity source code
+solidity_source = '''
+pragma solidity >=0.4.22;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract ERC20MinerReward is ERC20 {
+
+	event LogNewAlert(string description, address indexed _from, uint256 _n);
+
+	constructor() public ERC20("MinerReward", "MRW") {}
+
+	function _reward() public {
+    	_mint(block.coinbase, 20);
+    	emit LogNewAlert('_rewarded', block.coinbase, block.number);
+	}
+}
+'''
+
+# Compile the Solidity source code
+compiled_sol = compile_source(solidity_source)
+contract_interface = compiled_sol['<stdin>:ERC20MinerReward']
+
+# Set up web3 connection
+w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))  # Update with your RPC endpoint
+
+# Deploy the contract
+contract = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
+tx_hash = contract.constructor().transact({'from': w3.eth.accounts[0]})
+tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+
+# Interact with the deployed contract
+contract_instance = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
+contract_instance.functions._reward().transact({'from': w3.eth.accounts[0]})
+
+```
+
 # Result:
 Thus,the ERC-20 token is created .
   
